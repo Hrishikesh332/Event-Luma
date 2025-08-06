@@ -93,6 +93,10 @@ gunicorn==21.2.0
 - `FLASK_ENV`: `production`
 - `FLASK_DEBUG`: `false`
 
+### **Wake-up Scheduler Variables**
+- `RENDER_EXTERNAL_URL`: Your app's external URL (automatically set by Render)
+- The app will automatically ping itself every 10 minutes to stay alive
+
 ### **Optional Variables**
 - `DEFAULT_HEADLESS`: `true` (for Selenium)
 - `DEFAULT_USE_SELENIUM`: `true`

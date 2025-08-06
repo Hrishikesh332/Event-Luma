@@ -8,6 +8,9 @@ from datetime import datetime
 import logging
 from typing import List, Dict, Any, Optional
 import traceback
+import atexit
+import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Configure logging
 logging.basicConfig(
@@ -21,6 +24,29 @@ CORS(app)  # Enable CORS for all routes
 
 # Global scraper instance (can be configured per request)
 scraper = None
+
+# Wake-up scheduler to keep app alive on Render
+def wake_up_app():
+    try:
+        app_url = os.environ.get('RENDER_EXTERNAL_URL', 'http://127.0.0.1:5000/health')
+        if app_url:
+            response = requests.get(app_url)
+            if response.status_code == 200:
+                print(f"Successfully pinged {app_url} at {datetime.now()}")
+            else:
+                print(f"Failed to ping {app_url} (status code: {response.status_code}) at {datetime.now()}")
+        else:
+            print("APP_URL environment variable not set.")
+    except Exception as e:
+        print(f"Error occurred while pinging app: {e}")
+
+# Initialize scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(wake_up_app, 'interval', minutes=10)
+scheduler.start()
+
+# Register shutdown handler
+atexit.register(lambda: scheduler.shutdown())
 
 def get_scraper(headless: bool = True, use_selenium: bool = True) -> LumaScraper:
     """

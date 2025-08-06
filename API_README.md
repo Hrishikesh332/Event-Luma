@@ -279,6 +279,14 @@ The API includes CORS support for cross-origin requests, making it suitable for 
 - No authentication is implemented (add as needed for production)
 - Rate limiting is built into the scraper
 
+## Wake-up Scheduler
+
+The API includes a built-in wake-up scheduler that:
+- Automatically pings the app every 10 minutes to keep it alive
+- Uses the `RENDER_EXTERNAL_URL` environment variable (set by Render)
+- Helps prevent the app from sleeping on free tier hosting
+- Logs successful pings and any errors
+
 ## Production Deployment
 
 For production deployment:
