@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: luma-scraper-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: false 
